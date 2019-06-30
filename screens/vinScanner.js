@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, {Component} from 'react';
 import {
   Platform,
@@ -22,7 +14,11 @@ import { createStackNavigator, createAppContainer } from "react-navigation";
 
 import { RNCamera } from 'react-native-camera';
 
-class HomeScreen extends React.Component {
+import vinScanner from './screens/vinScanner';
+
+
+
+class vinScanner extends React.Component {
   render() {
     let checkAndroidPermission = true
     if (Platform.OS === 'android' && Platform.Version < 23) {
@@ -99,7 +95,7 @@ class HomeScreen extends React.Component {
     }
   };
   onBarCodeRead = async(scanResult) => {
-    alert(`tppp ${scanResult.data}`)
+    alert(`VIN: ${scanResult.data}`)
     console.log("------------------------------------------------")
     console.warn(scanResult.data)
     console.log("------------------------------------------------")
@@ -135,11 +131,4 @@ const styles = StyleSheet.create({
   },
 });
 
-
-const AppNavigator = createStackNavigator({
-  Home: {
-    screen: HomeScreen
-  }
-});
-
-export default createAppContainer(AppNavigator);
+export default vinScanner;
