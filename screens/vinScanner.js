@@ -10,15 +10,9 @@ import {
   MaskedViewIOS
 } from 'react-native';
 
-import { createStackNavigator, createAppContainer } from "react-navigation";
-
 import { RNCamera } from 'react-native-camera';
 
-import vinScanner from './screens/vinScanner';
-
-
-
-class vinScanner extends React.Component {
+class VinScanner extends React.Component {
   render() {
     let checkAndroidPermission = true
     if (Platform.OS === 'android' && Platform.Version < 23) {
@@ -95,7 +89,9 @@ class vinScanner extends React.Component {
     }
   };
   onBarCodeRead = async(scanResult) => {
-    alert(`VIN: ${scanResult.data}`)
+    // alert(`VIN: ${scanResult.data}`)
+    const vin = scanResult.data
+    this.props.navigation.navigate('Details',{vin})
     console.log("------------------------------------------------")
     console.warn(scanResult.data)
     console.log("------------------------------------------------")
@@ -131,4 +127,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default vinScanner;
+export default VinScanner;
