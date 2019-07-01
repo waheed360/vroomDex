@@ -32,7 +32,7 @@ const AppNavigator = createStackNavigator(
     Details: VinDecomposition
   },
   {
-    initialRouteName: "Home"
+    initialRouteName: "Details"
   }
 );
 
