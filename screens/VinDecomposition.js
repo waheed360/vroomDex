@@ -17,9 +17,6 @@ class VinDecomposition extends React.Component {
     this.state = {
       isLoading: false,
       dataSource: null,
-      make:null,
-      year:null,
-      model:null,
     }
   }
 
@@ -28,7 +25,7 @@ class VinDecomposition extends React.Component {
   }
 
   render() {
-    let vin = "2FTPX28L0XCA15511"//this.props.navigation.getParam('vin')// = "WP0AA2994VS320240" // //= "2FTPX28L0XCA15511"//
+    let vin = this.props.navigation.getParam('vin')// = "WP0AA2994VS320240" // //= "2FTPX28L0XCA15511"//
     // It looks like the general consensus is that you should strip the I character
     // if and only if the VIN number is longer than 17 characters. If you do that,
     // you should be able to parse all of the codes correctly.
@@ -40,10 +37,7 @@ class VinDecomposition extends React.Component {
     //   return
     // }
     console.log(vin)
-    let array = this.state.dataSource;
-    let { make,year,model } = this.state;
-
-    // let movies = array ? array.map() : null;
+    // let movies = this.state.dataSource.map();
     return(
       <View>
         <Text>{vin}</Text>
@@ -51,15 +45,6 @@ class VinDecomposition extends React.Component {
         onPress={() => this.getData(vin)}
         title='Get Data'
         />
-        <Text> Make: {make}</Text>
-        <Text> Year: {year}</Text>
-        <Text> Model: {model}</Text>
-        <Button
-        onPress={() => this.getOil()}
-        title='Get Oil'
-        />
-
-
 
       </View>
 
@@ -67,60 +52,43 @@ class VinDecomposition extends React.Component {
   };
   async getData(vin){
     console.log("this is the vin:" + vin)
+
+    console.log('got here negro')
+    console.log(vin.length > 17)
+    console.log( vin[0].toUpperCase() == 'I')
+
+
+
     let url =`https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinExtended/${vin}*BA?format=json`
     console.log(url)
     await axios.get(url, {
       })
-      .then( response => {
+      .then(function (response) {
+
+        // this.setState({
+        //   isLoading: false,
+        //   dataSource: response.data.Results,
+        // })
 
 
 
-
-
-
-
-        // console.log(response.data.Results)
+        console.log(response.data.Results)
         // console.log(response.data.Results[6].Value)
         //
+        let Brand = response.data.Results[6].Value;
+        let Year = response.data.Results[9].Value;
+        let Model = response.data.Results[8].Value;
 
-        let myVehicleData = {};
         for (let i = 0; i<response.data.Results.length; i++){
           let value = response.data.Results[i].Value
           let variable = response.data.Results[i].Variable
-          myVehicleData[variable] = value;
-          // console.log(`${variable} = ${value}\n`)
+          console.log(`${variable} = ${value}\n`)
         }
-        let make = myVehicleData.Make;
-        let year = myVehicleData.Model;
-        let model = myVehicleData["Model Year"];
-        console.log("rehan")
-        console.log(make,model,year)
-        console.log(myVehicleData)
 
-        const stringy = `make: ${make} \n year: ${year} \n model: ${model}`
-        this.setState({
-          isLoading: false,
-          dataSource: response.data.Results,
-          make,
-          year,
-          model,
-        })
-      })
-      .catch(function (error) {
-        alert(error)
-      });
-
-
-  };
-  async getOil(){
-    console.log("in oil")
-    let url =`https://api.auto-data.net/?code=435e373c56a10fd2d4cbe3c2eb139906`
-    console.log(url)
-    await axios.get(url, {
-      })
-      .then( response => {
-        console.log(response.data)
-
+        console.log("haan")
+        console.log(`Brand: ${Brand} \n Year: ${Year} \n Model: ${Model}`)
+        const stringy = `Brand: ${Brand} \n Year: ${Year} \n Model: ${Model}`
+        alert(stringy)
       })
       .catch(function (error) {
         alert(error)
