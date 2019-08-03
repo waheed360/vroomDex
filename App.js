@@ -15,6 +15,7 @@ import {
   CameraRoll,
   View,
   Alert,
+  MaskedViewIOS
 } from 'react-native';
 
 import { createStackNavigator, createAppContainer } from "react-navigation";

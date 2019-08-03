@@ -139,7 +139,6 @@ android {
 }
 
 dependencies {
-    implementation project(':@react-native-community_masked-view')
     implementation project(':react-native-gesture-handler')
     implementation project(':rn-camera-roll')
     implementation project(':react-native-camera')
