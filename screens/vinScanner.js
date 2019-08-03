@@ -7,8 +7,9 @@ import {
   CameraRoll,
   View,
   Alert,
-  MaskedViewIOS
 } from 'react-native';
+
+import MaskedView from '@react-native-community/masked-view';
 
 import { RNCamera } from 'react-native-camera';
 
@@ -20,7 +21,7 @@ class VinScanner extends React.Component {
     }
     return (
 
-      <MaskedViewIOS
+      <MaskedView
         style={{flex: 1, flexDirection: 'row', height: '100%', color:'red'}}
         maskElement={
           <View
@@ -75,7 +76,7 @@ class VinScanner extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
-      </MaskedViewIOS>
+      </MaskedView>
 
     );
   };
