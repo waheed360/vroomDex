@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Alert,
   Button,
+  FlatList,
 } from 'react-native';
 
 const axios = require('axios');
@@ -17,6 +18,10 @@ class VinDecomposition extends React.Component {
     this.state = {
       isLoading: false,
       dataSource: null,
+      basicInfo: {},
+      Year: null,
+      Make: null,
+      Model: null,
     }
   }
 
@@ -36,8 +41,16 @@ class VinDecomposition extends React.Component {
     // if (this.state.isLoading) {
     //   return
     // }
-    console.log(vin)
-    // let movies = this.state.dataSource.map();
+
+
+    let listArray = this.state.basicInfo;
+
+
+
+
+
+
+    let {Year, Make, Model } = this.state;
     return(
       <View>
         <Text>{vin}</Text>
@@ -45,56 +58,42 @@ class VinDecomposition extends React.Component {
         onPress={() => this.getData(vin)}
         title='Get Data'
         />
+        <FlatList
+          data={listArray}
+          renderItem={({item}) => <Text style={styles.item}>{item.Variable}: {item.Value}</Text>}
+        />
 
       </View>
 
     )
   };
   async getData(vin){
-    console.log("this is the vin:" + vin)
-
-    console.log('got here negro')
-    console.log(vin.length > 17)
-    console.log( vin[0].toUpperCase() == 'I')
-
-
-
     let url =`https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinExtended/${vin}*BA?format=json`
-    console.log(url)
     await axios.get(url, {
       })
-      .then(function (response) {
+      .then( (response) => {
+        vehicleData = [];
+        response.data.Results.forEach((entry) =>{
+          if (entry.Value) {
+            vehicleData.push(entry);
+          }
+        });
 
-        // this.setState({
-        //   isLoading: false,
-        //   dataSource: response.data.Results,
-        // })
+        let { Make, Model } = vehicleData;
+        let Year = vehicleData['Model Year'];
 
-
-
-        console.log(response.data.Results)
-        // console.log(response.data.Results[6].Value)
-        //
-        let Brand = response.data.Results[6].Value;
-        let Year = response.data.Results[9].Value;
-        let Model = response.data.Results[8].Value;
-
-        for (let i = 0; i<response.data.Results.length; i++){
-          let value = response.data.Results[i].Value
-          let variable = response.data.Results[i].Variable
-          console.log(`${variable} = ${value}\n`)
-        }
-
-        console.log("haan")
-        console.log(`Brand: ${Brand} \n Year: ${Year} \n Model: ${Model}`)
-        const stringy = `Brand: ${Brand} \n Year: ${Year} \n Model: ${Model}`
-        alert(stringy)
+        this.setState({
+          isLoading: false,
+          dataSource: response.data.Results,
+          basicInfo:vehicleData,
+          Year,
+          Make,
+          Model,
+        })
       })
       .catch(function (error) {
         alert(error)
       });
-
-
   };
   takePicture = async() => {
   };
@@ -105,12 +104,10 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
   },
-  preview: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    borderRadius: 2,
-    borderColor: 'red'
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
   },
 });
 
