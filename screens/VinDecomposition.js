@@ -16,7 +16,7 @@ class VinDecomposition extends React.Component {
     this.state = {
       isLoading: false,
       dataSource: null,
-      basicInfo: {},
+      basicInfo: [],
       Year: null,
       Make: null,
       Model: null,
@@ -24,7 +24,6 @@ class VinDecomposition extends React.Component {
   }
 
   componentDidMount() {
-
   }
 
   render() {
@@ -43,26 +42,30 @@ class VinDecomposition extends React.Component {
 
 
     const listArray = this.state.basicInfo;
+    console.log(listArray)
 
 
     const { Year, Make, Model } = this.state;
     return (
       <View style={styles.container}>
-        <Text>{vin}</Text>
-        <Button
-          onPress={() => this.getData(vin)}
-          title="Get Data"
-        />
+        <View>
+          <View style={styles.vin}>
+            <Text style={styles.Variable}>VIN:</Text>
+            <Text style={styles.Value}>{vin}</Text>
+          </View>
+          <Button
+            onPress={() => this.getData(vin)}
+            title="Get Data"
+          />
+        </View>
+
         <FlatList
-          style={{width: '100%'}}
           data={listArray}
           renderItem={({ item }) => (
             <View style={styles.row}>
-
               <Text style={styles.Variable}>{item.Variable}: </Text>
               <Text style={styles.Value}>{item.Value}</Text>
             </View>
-
           )}
           keyExtractor={(item, index) => index.toString()}
         />
@@ -108,6 +111,16 @@ class VinDecomposition extends React.Component {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 10,
+    flex: 1,
+  },
+  vin:{
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 20,
+  },
+  vinText: {
+    fontFamily: 'Avenir',
+    fontSize: 17,
   },
   row: {
     flex: 1,
@@ -120,17 +133,14 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   Variable: {
-    // backgroundColor:'red',
     fontFamily: 'Avenir',
     fontWeight: 'bold',
     fontSize: 17,
-
   },
   Value: {
-    // backgroundColor:'blue',
     fontFamily: 'Avenir',
     fontSize: 17,
-    maxWidth: '50%',
+    maxWidth: '60%',
   },
 });
 
