@@ -1,10 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
   View,
-  ActivityIndicator,
-  Alert,
   Button,
   FlatList,
 } from 'react-native';
@@ -22,7 +20,7 @@ class VinDecomposition extends React.Component {
       Year: null,
       Make: null,
       Model: null,
-    }
+    };
   }
 
   componentDidMount() {
@@ -30,84 +28,109 @@ class VinDecomposition extends React.Component {
   }
 
   render() {
-    let vin = this.props.navigation.getParam('vin')// = "WP0AA2994VS320240" // //= "2FTPX28L0XCA15511"//
+    let vin =  "WP0AA2994VS320240" //this.props.navigation.getParam('vin'); // //= "2FTPX28L0XCA15511"//
     // It looks like the general consensus is that you should strip the I character
     // if and only if the VIN number is longer than 17 characters. If you do that,
     // you should be able to parse all of the codes correctly.
     if (vin.length > 17 && vin[0].toUpperCase() == 'I') {
-      vin = vin.slice(1); //slice takes start and end. This returns array from index 1 to end
+      vin = vin.slice(1); // slice takes start and end. This returns array from index 1 to end
     }
+    // this.getData(vin)
     //
     // if (this.state.isLoading) {
     //   return
     // }
 
 
-    let listArray = this.state.basicInfo;
+    const listArray = this.state.basicInfo;
 
 
-
-
-
-
-    let {Year, Make, Model } = this.state;
-    return(
-      <View>
+    const { Year, Make, Model } = this.state;
+    return (
+      <View style={styles.container}>
         <Text>{vin}</Text>
         <Button
-        onPress={() => this.getData(vin)}
-        title='Get Data'
+          onPress={() => this.getData(vin)}
+          title="Get Data"
         />
         <FlatList
+          style={{width: '100%'}}
           data={listArray}
-          renderItem={({item}) => <Text style={styles.item}>{item.Variable}: {item.Value}</Text>}
+          renderItem={({ item }) => (
+            <View style={styles.row}>
+
+              <Text style={styles.Variable}>{item.Variable}: </Text>
+              <Text style={styles.Value}>{item.Value}</Text>
+            </View>
+
+          )}
+          keyExtractor={(item, index) => index.toString()}
         />
 
       </View>
 
-    )
-  };
-  async getData(vin){
-    let url =`https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinExtended/${vin}*BA?format=json`
+    );
+  }
+
+  async getData(vin) {
+    const url = `https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinExtended/${vin}*BA?format=json`;
     await axios.get(url, {
-      })
-      .then( (response) => {
+    })
+      .then((response) => {
         vehicleData = [];
-        response.data.Results.forEach((entry) =>{
+        response.data.Results.forEach((entry) => {
           if (entry.Value) {
             vehicleData.push(entry);
           }
         });
 
-        let { Make, Model } = vehicleData;
-        let Year = vehicleData['Model Year'];
+        const { Make, Model } = vehicleData;
+        const Year = vehicleData['Model Year'];
 
         this.setState({
           isLoading: false,
           dataSource: response.data.Results,
-          basicInfo:vehicleData,
+          basicInfo: vehicleData,
           Year,
           Make,
           Model,
-        })
+        });
       })
-      .catch(function (error) {
-        alert(error)
+      .catch((error) => {
+        alert(error);
       });
-  };
-  takePicture = async() => {
+  }
+
+  takePicture = async () => {
   };
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: 'column',
+    paddingHorizontal: 10,
   },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
+  row: {
+    flex: 1,
+    paddingVertical: 25,
+    paddingHorizontal: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: 'grey',
+    width: '100%',
+  },
+  Variable: {
+    // backgroundColor:'red',
+    fontFamily: 'Avenir',
+    fontWeight: 'bold',
+    fontSize: 17,
+
+  },
+  Value: {
+    // backgroundColor:'blue',
+    fontFamily: 'Avenir',
+    fontSize: 17,
+    maxWidth: '50%',
   },
 });
 
