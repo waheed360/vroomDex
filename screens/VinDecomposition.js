@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 const axios = require('axios');
+import Groups from '../components/Groups';
 
 
 class VinDecomposition extends React.Component {
@@ -16,7 +17,9 @@ class VinDecomposition extends React.Component {
     this.state = {
       isLoading: false,
       dataSource: null,
-      basicInfo: [],
+      vehicleData: [],
+      yearMakeModel: [],
+      otherData: [],
       Year: null,
       Make: null,
       Model: null,
@@ -27,7 +30,7 @@ class VinDecomposition extends React.Component {
   }
 
   render() {
-    let vin =  "WP0AA2994VS320240" //this.props.navigation.getParam('vin'); // //= "2FTPX28L0XCA15511"//
+    let vin =  'WP0AA2994VS320240'//this.props.navigation.getParam('vin'); //WP0AA2994VS320240 // //= "2FTPX28L0XCA15511"//
     // It looks like the general consensus is that you should strip the I character
     // if and only if the VIN number is longer than 17 characters. If you do that,
     // you should be able to parse all of the codes correctly.
@@ -41,8 +44,9 @@ class VinDecomposition extends React.Component {
     // }
 
 
-    const listArray = this.state.basicInfo;
+    const listArray = this.state.vehicleData;
     console.log(listArray)
+    const myListEle = [{Value: "911" ,ValueId: "7832",Variable: "Model",VariableId: 28}]
 
 
     const { Year, Make, Model } = this.state;
@@ -55,20 +59,21 @@ class VinDecomposition extends React.Component {
           </View>
           <Button
             onPress={() => this.getData(vin)}
-            title="Get Data"
+            title="Scan Vin"
           />
         </View>
-
-        <FlatList
-          data={listArray}
-          renderItem={({ item }) => (
-            <View style={styles.row}>
-              <Text style={styles.Variable}>{item.Variable}: </Text>
-              <Text style={styles.Value}>{item.Value}</Text>
-            </View>
-          )}
-          keyExtractor={(item, index) => index.toString()}
+        <Groups
+          name={this.state.yearMakeModel}
+          description={'Year Make Model'}
+          details={this.state.yearMakeModel}
         />
+        <Groups
+          name={this.state.otherData}
+          description={'Other Data'}
+          details={this.state.otherData}
+        />
+
+
 
       </View>
 
@@ -80,20 +85,35 @@ class VinDecomposition extends React.Component {
     await axios.get(url, {
     })
       .then((response) => {
-        vehicleData = [];
+        otherData = [];
+        yearMakeModel = [];
         response.data.Results.forEach((entry) => {
           if (entry.Value) {
-            vehicleData.push(entry);
+            if (entry.Variable == 'Make' || entry.Variable == 'Model' || entry.Variable == 'Model Year'){
+              yearMakeModel.push(entry)
+            }
+            else {
+              otherData.push(entry)
+            }
           }
         });
+        console.log(otherData)
+        const { Make, Model } = otherData;
+        const Year = otherData['Model Year'];
+        vehicleData = [...yearMakeModel, ...otherData]
 
-        const { Make, Model } = vehicleData;
-        const Year = vehicleData['Model Year'];
+        // let vehicle = [{Variable: 'Year', Value: Year},
+        // {Variable: 'Make', Value: String(Make)},
+        // {Variable: 'Model', Value: String(Model)}]
+        // vehicleData = [...vehicle, ...vehicleData]
+        console.log(vehicleData)
 
         this.setState({
           isLoading: false,
           dataSource: response.data.Results,
-          basicInfo: vehicleData,
+          vehicleData: vehicleData,
+          yearMakeModel: yearMakeModel,
+          otherData: otherData,
           Year,
           Make,
           Model,
