@@ -5,6 +5,7 @@ import {
   View,
   Button,
   FlatList,
+  ScrollView
 } from 'react-native';
 
 const axios = require('axios');
@@ -62,16 +63,19 @@ class VinDecomposition extends React.Component {
             title="Scan Vin"
           />
         </View>
-        <Groups
-          name={this.state.yearMakeModel}
-          description={'Year Make Model'}
-          details={this.state.yearMakeModel}
-        />
-        <Groups
-          name={this.state.otherData}
-          description={'Other Data'}
-          details={this.state.otherData}
-        />
+        <ScrollView>
+          <Groups
+            name={this.state.yearMakeModel}
+            description={'Year Make Model'}
+            details={this.state.yearMakeModel}
+          />
+          <Groups
+            name={this.state.otherData}
+            description={'Other Data'}
+            details={this.state.otherData}
+          />
+
+        </ScrollView>
 
 
 

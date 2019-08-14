@@ -28,6 +28,7 @@ class Groups extends React.Component {
   renderDetails(list) {
     return(
       <FlatList
+        scrollEnabled={false}
         data={list}
         renderItem={({ item }) => (
           <View style={styles.row}>
